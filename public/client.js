@@ -9,7 +9,7 @@ do {
 } while (!uname && Room_name)
 if (uname && Room_name) {
     user = uname;
-    socket.emit('register', user);
+    socket.emit('register', {Room_name});
 
 }
 document.getElementById("user_name").innerHTML = uname;
