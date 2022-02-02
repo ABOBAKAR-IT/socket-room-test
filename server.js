@@ -14,29 +14,28 @@ app.get("/", (req, res) => {
 // Socket
 const io = require("socket.io")(http);
 var connectedUsers = {};
-var userbox = {};
+var userbox = [];
 
 io.on("connection", (socket) => {
   console.log("Connected...");
   console.log(socket.id);
   /*Register connected user*/
   socket.on("register", async function (username) {
-   
+
     let data = await user.find(username);
     //  if (connectedUsers.hasOwnProperty(username))
     if (data) {
       socket.username = username;
       connectedUsers[username] = socket;
-      userbox[username] = [];
+      // userbox[username] = [];
       socket.join(username);
       let chat = await user.find(username);
-    //  console.log("user : " + chat);
       connectedUsers[username].emit("chat", chat);
       console.log("user exist");
     } else {
       socket.username = username;
       connectedUsers[username] = socket;
-      userbox[username] = [];
+      // userbox[username] = [];
       socket.join(username);
       await user.add(username);
     }
@@ -49,23 +48,18 @@ io.on("connection", (socket) => {
     let frm = data.frm;
     message = data.message;
     var sms = {};
-    sms["to"] = message;
-   // userbox[frm].push(sms);
-    await user.update(sms, frm);
-    var sms = {};
-    sms["frm"] = message;
-   // userbox[to].push(sms);
+    sms["sender_name"] = frm;
+    sms["message"] = message
     await user.update(sms, to);
-
     if (connectedUsers.hasOwnProperty(to)) {
       let d = await user.find(to);
       socket.broadcast
-      .to(to).emit("private_chat", {
-        //The sender's username
-        username: frm,
-        //Message sent to receiver
-        message: message,
-      });
+        .to(to).emit("private_chat", {
+          //The sender's username
+          username: frm,
+          //Message sent to receiver
+          message: message,
+        });
     }
   });
 });

@@ -1,5 +1,4 @@
 const socket = io()
-
 var uname, Room_name;
 let textarea = document.querySelector('#textarea')
 let messageArea = document.querySelector('.message__area')
@@ -10,7 +9,6 @@ do {
 if (uname && Room_name) {
     user = uname;
     socket.emit('register', Room_name);
-
 }
 document.getElementById("user_name").innerHTML = uname;
 textarea.addEventListener('keyup', (e) => {
@@ -28,9 +26,7 @@ function sendMessage(message) {
     appendMessage(msg, 'outgoing')
     textarea.value = ''
     scrollToBottom()
-
     // Send to server 
-
     socket.emit('private_chat', {
         frm: user,
         to: Room_name,
@@ -55,7 +51,7 @@ function appendMessage(msg, type) {
 /*Received private messages*/
 socket.on('private_chat', function (msg) {
     let data = {}
-console.log(msg);
+    console.log(msg);
     data.user = msg.username;
     data.message = msg.message;
     appendMessage(data, 'incoming')
@@ -66,20 +62,20 @@ console.log(msg);
 socket.on('chat', function (msg) {
     // let name = prompt("welcome login again")
     let data = {}
-    console.log(msg)
+
     msg.sms.forEach(element => {
-       
-         if(element.to){
+
+        if (element.sender_name == uname) {
             data.user = uname;
-            data.message= element.to
+            data.message = element.message
             appendMessage(data, 'outgoing')
-        }else{
-            data.user = Room_name;
-            data.message= element.frm
+        } else {
+            data.user = element.sender_name;
+            data.message = element.message
             appendMessage(data, 'incoming')
-         }
-    scrollToBottom()
-        })
+        }
+        scrollToBottom()
+    })
 });
 
 function scrollToBottom() {

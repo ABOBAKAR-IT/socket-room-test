@@ -1,31 +1,39 @@
-
 const user = require('../4_model/user_model');
 module.exports.add = async (body) => {
-    try {console.log("body : "+body);
-            const userdata= new user({
-                username:body,
-                 })
-             let data=  await  userdata.save()
-             return data
-            
-        } catch (error) {
-            console.log(error);
-        }
+    try {
+        console.log("body : " + body);
+        const userdata = new user({
+            Room_name: body,
+        })
+        let data = await userdata.save()
+        return data
+
+    } catch (error) {
+        console.log(error);
+    }
 };
 
-module.exports.update = async (body,name) => {
-let d=await user.findOneAndUpdate({username:name},{$push: { sms: body } })
+module.exports.update = async (body, name) => {
+    let d = await user.findOneAndUpdate({
+        Room_name: name
+    }, {
+        $push: {
+            sms: body
+        }
+    })
 
 };
 
 module.exports.find = async (body) => {
     try {
-       let data=await  user.findOne({username:body})
+        let data = await user.findOne({
+            Room_name: body
+        })
         return data
-       
-   } catch (error) {
-       console.log(error);
-   }
+
+    } catch (error) {
+        console.log(error);
+    }
 };
 // module.exports.findone = async (body) => {
 //     user.find({id:req.body.id})
@@ -33,5 +41,5 @@ module.exports.find = async (body) => {
 //     .catch(err=>res.send(err));
 // };
 // module.exports.del = async (body) => {
-  
+
 // };
