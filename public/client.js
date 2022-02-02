@@ -9,7 +9,7 @@ do {
 } while (!uname && Room_name)
 if (uname && Room_name) {
     user = uname;
-    socket.emit('register', {Room_name});
+    socket.emit('register', Room_name);
 
 }
 document.getElementById("user_name").innerHTML = uname;
@@ -55,7 +55,7 @@ function appendMessage(msg, type) {
 /*Received private messages*/
 socket.on('private_chat', function (msg) {
     let data = {}
-
+console.log(msg);
     data.user = msg.username;
     data.message = msg.message;
     appendMessage(data, 'incoming')

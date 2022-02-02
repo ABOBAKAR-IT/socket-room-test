@@ -1,7 +1,7 @@
 
 const user = require('../4_model/user_model');
 module.exports.add = async (body) => {
-    try {
+    try {console.log("body : "+body);
             const userdata= new user({
                 username:body,
                  })
@@ -19,8 +19,13 @@ let d=await user.findOneAndUpdate({username:name},{$push: { sms: body } })
 };
 
 module.exports.find = async (body) => {
-  let data=await  user.findOne({username:body})
-   return data
+    try {
+       let data=await  user.findOne({username:body})
+        return data
+       
+   } catch (error) {
+       console.log(error);
+   }
 };
 // module.exports.findone = async (body) => {
 //     user.find({id:req.body.id})

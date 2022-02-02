@@ -21,12 +21,14 @@ io.on("connection", (socket) => {
   console.log(socket.id);
   /*Register connected user*/
   socket.on("register", async function (username) {
+   
     let data = await user.find(username);
     //  if (connectedUsers.hasOwnProperty(username))
     if (data) {
       socket.username = username;
       connectedUsers[username] = socket;
       userbox[username] = [];
+      socket.join(username);
       let chat = await user.find(username);
     //  console.log("user : " + chat);
       connectedUsers[username].emit("chat", chat);
@@ -35,27 +37,30 @@ io.on("connection", (socket) => {
       socket.username = username;
       connectedUsers[username] = socket;
       userbox[username] = [];
+      socket.join(username);
       await user.add(username);
     }
   });
 
   /*Private chat*/
   socket.on("private_chat", async function (data) {
+    console.log(data);
     let to = data.to;
     let frm = data.frm;
     message = data.message;
     var sms = {};
     sms["to"] = message;
-    userbox[frm].push(sms);
+   // userbox[frm].push(sms);
     await user.update(sms, frm);
     var sms = {};
     sms["frm"] = message;
-    userbox[to].push(sms);
+   // userbox[to].push(sms);
     await user.update(sms, to);
 
     if (connectedUsers.hasOwnProperty(to)) {
       let d = await user.find(to);
-      connectedUsers[to].emit("private_chat", {
+      socket.broadcast
+      .to(to).emit("private_chat", {
         //The sender's username
         username: frm,
         //Message sent to receiver
